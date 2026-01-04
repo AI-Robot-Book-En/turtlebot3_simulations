@@ -1,40 +1,88 @@
-# TurtleBot3
-<img src="https://raw.githubusercontent.com/ROBOTIS-GIT/emanual/master/assets/images/platform/turtlebot3/logo_turtlebot3.png" width="300">
+# Happy Miniのシミュレーション
 
-- Active Branches: noetic, humble, main
-- Legacy Branches: *-devel
+[オリジナルのREADME](README_original.md)
 
-## Open Source Projects Related to TurtleBot3
-- [turtlebot3](https://github.com/ROBOTIS-GIT/turtlebot3)
-- [turtlebot3_msgs](https://github.com/ROBOTIS-GIT/turtlebot3_msgs)
-- [turtlebot3_simulations](https://github.com/ROBOTIS-GIT/turtlebot3_simulations)
-- [turtlebot3_manipulation](https://github.com/ROBOTIS-GIT/turtlebot3_manipulation)
-- [turtlebot3_manipulation_simulations](https://github.com/ROBOTIS-GIT/turtlebot3_manipulation_simulations)
-- [turtlebot3_applications](https://github.com/ROBOTIS-GIT/turtlebot3_applications)
-- [turtlebot3_applications_msgs](https://github.com/ROBOTIS-GIT/turtlebot3_applications_msgs)
-- [turtlebot3_machine_learning](https://github.com/ROBOTIS-GIT/turtlebot3_machine_learning)
-- [turtlebot3_autorace](https://github.com/ROBOTIS-GIT/turtlebot3_autorace)
-- [turtlebot3_home_service_challenge](https://github.com/ROBOTIS-GIT/turtlebot3_home_service_challenge)
-- [hls_lfcd_lds_driver](https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver)
-- [ld08_driver](https://github.com/ROBOTIS-GIT/ld08_driver)
-- [open_manipulator](https://github.com/ROBOTIS-GIT/open_manipulator)
-- [dynamixel_sdk](https://github.com/ROBOTIS-GIT/DynamixelSDK)
-- [OpenCR-Hardware](https://github.com/ROBOTIS-GIT/OpenCR-Hardware)
-- [OpenCR](https://github.com/ROBOTIS-GIT/OpenCR)
+## 概　要
 
-## Documentation, Videos, and Community
+- [TurtleBot3のシミュレーション](https://github.com/ROBOTIS-GIT/turtlebot3_simulations)の
+[humbleブランチ](https://github.com/ROBOTIS-GIT/turtlebot3_simulations/tree/humble)からフォークして
+Happy Miniのモデル（URDF, Mesh）を追加して，シミュレーションできるようにしました．
+ロボット台車のパラメータはwaffle_piと同じです．
 
-### Official Documentation
-- ⚙️ **[ROBOTIS DYNAMIXEL](https://dynamixel.com/)** – Official website for DYNAMIXEL
-- 📚 **[ROBOTIS e-Manual for Dynamixel SDK](http://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/)** – Official guide for Dynamixel SDK
-- 📚 **[ROBOTIS e-Manual for TurtleBot3](http://turtlebot3.robotis.com/)** – Official guide for TurtleBot3
-- 📚 **[ROBOTIS e-Manual for OpenMANIPULATOR-X](https://emanual.robotis.com/docs/en/platform/openmanipulator_x/overview/)** – Official guide for OpenMANIPULATOR-X
+## 追加・変更箇所
+- [turtlebot3_gazebo/models/turtlebot3_happy_mini]()
+- [turtlebot3_gazebo/urdf/turtlebot3_happy_mini.urdf]()
+- [turtlebot3_gazebo/launch/spawn2_turtlebot3.launch.py]()
+- [turtlebot3_gazebo/launch/turtlebot3_house2.launch.py]()
 
-### Learning Resources
-- 🎥 **[ROBOTIS YouTube Channel](https://www.youtube.com/@ROBOTISCHANNEL)**
-- 🎥 **[ROBOTIS Open Source YouTube Channel](https://www.youtube.com/@ROBOTISOpenSourceTeam)**
-- 🎥 **[ROBOTIS TurtleBot3 YouTube Playlist](https://www.youtube.com/playlist?list=PLRG6WP3c31_XI3wlvHlx2Mp8BYqgqDURU)** – Video tutorials for TurtleBot3
-- 🎥 **[ROBOTIS OpenMANIPULATOR YouTube Playlist](https://www.youtube.com/playlist?list=PLRG6WP3c31_WpEsB6_Rdt3KhiopXQlUkb)** – Video tutorials for OpenMANIPULATOR
+## 環　境  
+- ROS2 Humble
 
-### Community & Support
-- 💬 **[ROBOTIS Community Forum](https://forum.robotis.com/)** – Get help and discuss with other users
+## インストール  
+- GazeboをROSで使うためのパッケージのインストール
+```
+$ source ~/.bashrc
+$ sudo apt -y install ros-humble-gazebo-*
+$ sudo apt -y install ros-humble-gazebo-ros-pkgs
+```
+- Happy Mini関連パッケージのインストール
+```
+$ cd ~/airobot_ws/src
+$ git clone -b humble https://github.com/ROBOTIS-GIT/turtlebot3
+$ git clone -b humble https://github.com/ROBOTIS-GIT/turtlebot3_msgs
+$ git clone https://github.com/AI-Robot-Book-En/turtlebot3_simulations
+$ cd ~/airobot_ws
+$ colcon build
+$ source install/setup.bash
+```
+
+
+## 実行
+1. Empty World  
+![happy mini empty world](happy_mini_images/happy_mini_empty_world.png)
+
+```
+$ export TURTLEBOT3_MODEL=happy_mini
+$ ros2 launch turtlebot3_gazebo empty_world.launch.py
+```
+
+2. TurtleBot3 World  
+![happy mini turtlebot3 world](happy_mini_images/happy_mini_turtlebot3_world.png)
+```
+$ export TURTLEBOT3_MODEL=happy_mini
+$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+```
+
+3. TurtleBot3 House
+![happy mini turtlebot3 house](happy_mini_images/happy_mini_house.png)
+```
+$ export TURTLEBOT3_MODEL=happy_mini
+$ ros2 launch turtlebot3_gazebo turtlebot3_house.launch.py
+```
+4. ロボットモデルの変更
+- Waffle Piを使う場合
+```
+$ export TURTLEBOT3_MODEL=waffle_pi
+```
+
+5. ロボット初期位置の変更方法
+```
+$ ros2 launch turtlebot3_gazebo turtlebot3_house.launch.py　x_pose:=初期位置のx座標 y_pose:=初期位置のy座標
+```
+
+6. ロボット初期姿勢の変更方法  
+turtlebot3_house.launch.pyで初期向きを設定できるように改良したturtlebot3_house2.launch.pyを使ってください．  
+
+```
+$ ros2 launch turtlebot3_gazebo turtlebot3_house2.launch.py　x_pose:=初期位置のx座標 y_pose:=初期位置のy座標 yaw_pose:=初期向きのYaw角
+```
+
+## 履歴
+- 2024-10-13: 初期版
+
+## ライセンス
+Apache License 2.0 license found in the LICENSE file in the root directory of this project.
+
+
+## 参考文献
+- 今のところありません
